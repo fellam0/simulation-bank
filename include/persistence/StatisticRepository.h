@@ -4,13 +4,13 @@
 #include <QString>
 #include <QVector>
 
-#include "simulation/SimulationConfig.h"
+#include "simulation/SimulationEntry.h"
 #include "simulation/StatisticManager.h"
 
 struct RunSummary {
     int id = 0;
     QDateTime timestamp;
-    SimulationConfig config;
+    SimulationEntry entry;
     int servedCount = 0;
     int nonServedCount = 0;
     double averageWaitingTime = 0.0;
@@ -35,7 +35,7 @@ class StatisticRepository {
 public:
     bool open(const QString& databaseFilePath);
 
-    int saveRun(const SimulationConfig& config, const StatisticManager& stats);
+    int saveRun(const SimulationEntry& entry, const StatisticManager& stats);
 
     QVector<RunSummary> listRuns() const;
     QVector<ClientRecord> clientsForRun(int runId) const;

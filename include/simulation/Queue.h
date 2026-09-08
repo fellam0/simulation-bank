@@ -6,18 +6,21 @@
 
 #include "client/AbstractClient.h"
 
+// FIFO queue for clients, shared by all cashiers. Method names follow the
+// provided class diagram; size()/clients() are extras used by the GUI.
 class Queue {
 public:
     bool isEmpty() const;
     std::size_t size() const;
 
-    void pushBack(std::shared_ptr<AbstractClient> client);
+    void addQueueLast(std::shared_ptr<AbstractClient> client);
+    std::shared_ptr<AbstractClient> getQueueFirst();
 
-    // Returns the closest-to-front VIP client if any, otherwise the client at
-    // the front of the queue. Removes the returned client from the queue.
-    std::shared_ptr<AbstractClient> takeNextToServe();
+    // Peeks (does not remove) the VIP client closest to the head of the queue.
+    std::shared_ptr<AbstractClient> findPriorityClient() const;
+    void removePriorityClient(const std::shared_ptr<AbstractClient>& client);
 
-    void updatePatience();
+    void updateClientPatience();
     std::vector<std::shared_ptr<AbstractClient>> removeImpatientClients();
 
     const std::deque<std::shared_ptr<AbstractClient>>& clients() const;

@@ -69,12 +69,31 @@ void BankView::paintEvent(QPaintEvent*) {
             painter.setBrush(client->isPriority() ? QColor(240, 173, 78) : QColor(70, 130, 180));
             painter.setPen(QPen(Qt::black, 1));
             painter.drawRoundedRect(box, 8, 8);
+
+            const int totalServiceTime = client->getOperation().getServiceTime();
+            const int remaining = cashier.remainingServiceTime();
+            const double ratio = totalServiceTime > 0
+                                      ? static_cast<double>(remaining) / totalServiceTime
+                                      : 0.0;
+
+            const QRectF textBox(box.x(), box.y(), box.width(), box.height() - 16);
             painter.setPen(Qt::white);
-            painter.drawText(box, Qt::AlignCenter,
-                              QString("%1\n#%2\n%3")
+            painter.drawText(textBox, Qt::AlignCenter,
+                              QString("%1\n#%2\n%3\nreste : %4")
                                   .arg(QString::fromStdString(client->label()))
                                   .arg(client->getId())
-                                  .arg(QString::fromStdString(client->getOperation().name())));
+                                  .arg(QString::fromStdString(client->getOperation().name()))
+                                  .arg(remaining));
+
+            const QRectF barTrack(box.x() + 8, box.bottom() - 12, box.width() - 16, 6);
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(QColor(0, 0, 0, 90));
+            painter.drawRoundedRect(barTrack, 3, 3);
+
+            QRectF barFill = barTrack;
+            barFill.setWidth(barTrack.width() * ratio);
+            painter.setBrush(Qt::white);
+            painter.drawRoundedRect(barFill, 3, 3);
         }
 
         painter.setPen(palette().text().color());

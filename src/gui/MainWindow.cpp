@@ -109,16 +109,16 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     refreshHistoryList();
 }
 
-SimulationConfig MainWindow::readConfigFromForm() const {
-    SimulationConfig config;
-    config.simulationDuration = durationSpin_->value();
-    config.cashierCount = cashierCountSpin_->value();
-    config.minServiceTime = minServiceSpin_->value();
-    config.maxServiceTime = maxServiceSpin_->value();
-    config.clientArrivalInterval = arrivalIntervalSpin_->value();
-    config.clientPatienceTime = patienceSpin_->value();
-    config.vipClientRate = vipRateSpin_->value();
-    return config;
+SimulationEntry MainWindow::readConfigFromForm() const {
+    SimulationEntry entry;
+    entry.setSimulationDuration(durationSpin_->value());
+    entry.setCashierCount(cashierCountSpin_->value());
+    entry.setMinServiceTime(minServiceSpin_->value());
+    entry.setMaxServiceTime(maxServiceSpin_->value());
+    entry.setClientArrivalInterval(arrivalIntervalSpin_->value());
+    entry.setClientPatienceTime(patienceSpin_->value());
+    entry.setPriorityClientRate(vipRateSpin_->value());
+    return entry;
 }
 
 void MainWindow::setFormEnabled(bool enabled) {
@@ -133,13 +133,13 @@ void MainWindow::setFormEnabled(bool enabled) {
 }
 
 void MainWindow::onStartClicked() {
-    SimulationConfig config = readConfigFromForm();
-    if (config.maxServiceTime < config.minServiceTime) {
+    SimulationEntry entry = readConfigFromForm();
+    if (entry.getMaxServiceTime() < entry.getMinServiceTime()) {
         statsLabel_->setText("Le temps de service max doit etre >= au temps de service min.");
         return;
     }
 
-    simulation_ = std::make_unique<Simulation>(config);
+    simulation_ = std::make_unique<Simulation>(entry);
     bankView_->attachSimulation(simulation_.get());
 
     setFormEnabled(false);
@@ -171,14 +171,14 @@ void MainWindow::onTick() {
     statsLabel_->setText(QString(
         "t = %1 / %2 | file d'attente = %3 | servis = %4 | non servis = %5")
         .arg(simulation_->currentTime())
-        .arg(simulation_->config().simulationDuration)
+        .arg(simulation_->entry().getSimulationDuration())
         .arg(simulation_->bank().getQueue().size())
         .arg(stats.servedClientCount())
         .arg(stats.nonServedClientCount()));
 
     if (!running) {
         tickTimer_.stop();
-        int runId = repository_.saveRun(simulation_->config(), simulation_->statisticManager());
+        int runId = repository_.saveRun(simulation_->entry(), simulation_->statisticManager());
         statusBar()->showMessage(QString("Simulation terminee, resultats enregistres (run #%1).").arg(runId), 5000);
 
         setFormEnabled(true);

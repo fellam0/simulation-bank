@@ -14,7 +14,11 @@ bool Cashier::serviceFinished() const {
     return servingClient_ != nullptr && remainingServiceTime_ == 0;
 }
 
-void Cashier::tick() {
+int Cashier::remainingServiceTime() const {
+    return remainingServiceTime_;
+}
+
+void Cashier::work() {
     if (remainingServiceTime_ > 0) {
         remainingServiceTime_--;
     }
@@ -29,8 +33,6 @@ std::shared_ptr<AbstractClient> Cashier::getServingClient() const {
     return servingClient_;
 }
 
-std::shared_ptr<AbstractClient> Cashier::release() {
-    auto client = servingClient_;
-    servingClient_.reset();
-    return client;
+void Cashier::setServingClient(std::shared_ptr<AbstractClient> client) {
+    servingClient_ = std::move(client);
 }

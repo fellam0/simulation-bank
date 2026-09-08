@@ -28,7 +28,7 @@ private slots:
     void onHistorySelectionChanged();
 
 private:
-    SimulationConfig readConfigFromForm() const;
+    SimulationEntry readConfigFromForm() const;
     void setFormEnabled(bool enabled);
     void refreshHistoryList();
     void refreshHistoryChart(int runId);

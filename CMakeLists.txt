@@ -16,7 +16,7 @@ add_library(simulation_core STATIC
     src/simulation/Queue.cpp
     src/simulation/Bank.cpp
     src/simulation/StatisticManager.cpp
-    src/simulation/RandomUtil.cpp
+    src/simulation/SimulationUtility.cpp
     src/simulation/Simulation.cpp
 )
 target_include_directories(simulation_core PUBLIC include)
@@ -40,6 +40,9 @@ if(Qt6_FOUND)
 
     add_executable(simulation_db_test src/main_db_test.cpp)
     target_link_libraries(simulation_db_test PRIVATE simulation_persistence)
+
+    add_executable(simulation_tests src/tests/spec_tests.cpp)
+    target_link_libraries(simulation_tests PRIVATE simulation_persistence)
 
     qt6_wrap_cpp(SIMULATION_GUI_MOC_SOURCES
         include/gui/BankView.h

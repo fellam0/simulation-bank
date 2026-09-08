@@ -59,7 +59,7 @@ void StatisticRepository::ensureSchema() {
     );
 }
 
-int StatisticRepository::saveRun(const SimulationConfig& config, const StatisticManager& stats) {
+int StatisticRepository::saveRun(const SimulationEntry& entry, const StatisticManager& stats) {
     QSqlDatabase db = QSqlDatabase::database(connectionName_);
 
     QSqlQuery insertRun(db);
@@ -72,18 +72,18 @@ int StatisticRepository::saveRun(const SimulationConfig& config, const Statistic
         ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     insertRun.addBindValue(QDateTime::currentDateTime().toString(Qt::ISODate));
-    insertRun.addBindValue(config.simulationDuration);
-    insertRun.addBindValue(config.cashierCount);
-    insertRun.addBindValue(config.minServiceTime);
-    insertRun.addBindValue(config.maxServiceTime);
-    insertRun.addBindValue(config.clientArrivalInterval);
-    insertRun.addBindValue(config.vipClientRate);
-    insertRun.addBindValue(config.clientPatienceTime);
+    insertRun.addBindValue(entry.getSimulationDuration());
+    insertRun.addBindValue(entry.getCashierCount());
+    insertRun.addBindValue(entry.getMinServiceTime());
+    insertRun.addBindValue(entry.getMaxServiceTime());
+    insertRun.addBindValue(entry.getClientArrivalInterval());
+    insertRun.addBindValue(entry.getPriorityClientRate());
+    insertRun.addBindValue(entry.getClientPatienceTime());
     insertRun.addBindValue(stats.servedClientCount());
     insertRun.addBindValue(stats.nonServedClientCount());
     insertRun.addBindValue(stats.averageClientWaitingTime());
     insertRun.addBindValue(stats.averageClientServiceTime());
-    insertRun.addBindValue(stats.averageCashierOccupationRate(config.cashierCount));
+    insertRun.addBindValue(stats.averageCashierOccupationRate(entry.getCashierCount()));
     insertRun.addBindValue(stats.clientSatisfactionRate());
 
     if (!insertRun.exec()) {
@@ -136,13 +136,13 @@ QVector<RunSummary> StatisticRepository::listRuns() const {
         RunSummary run;
         run.id = query.value(0).toInt();
         run.timestamp = QDateTime::fromString(query.value(1).toString(), Qt::ISODate);
-        run.config.simulationDuration = query.value(2).toInt();
-        run.config.cashierCount = query.value(3).toInt();
-        run.config.minServiceTime = query.value(4).toInt();
-        run.config.maxServiceTime = query.value(5).toInt();
-        run.config.clientArrivalInterval = query.value(6).toInt();
-        run.config.vipClientRate = query.value(7).toDouble();
-        run.config.clientPatienceTime = query.value(8).toInt();
+        run.entry.setSimulationDuration(query.value(2).toInt());
+        run.entry.setCashierCount(query.value(3).toInt());
+        run.entry.setMinServiceTime(query.value(4).toInt());
+        run.entry.setMaxServiceTime(query.value(5).toInt());
+        run.entry.setClientArrivalInterval(query.value(6).toInt());
+        run.entry.setPriorityClientRate(query.value(7).toDouble());
+        run.entry.setClientPatienceTime(query.value(8).toInt());
         run.servedCount = query.value(9).toInt();
         run.nonServedCount = query.value(10).toInt();
         run.averageWaitingTime = query.value(11).toDouble();

@@ -18,16 +18,16 @@ void printTick(const Simulation& simulation) {
 }
 
 int main() {
-    SimulationConfig config;
-    config.simulationDuration = 60;
-    config.cashierCount = 3;
-    config.minServiceTime = 2;
-    config.maxServiceTime = 8;
-    config.clientArrivalInterval = 4;
-    config.vipClientRate = 0.15;
-    config.clientPatienceTime = 5;
+    SimulationEntry entry;
+    entry.setSimulationDuration(60);
+    entry.setCashierCount(3);
+    entry.setMinServiceTime(2);
+    entry.setMaxServiceTime(8);
+    entry.setClientArrivalInterval(4);
+    entry.setPriorityClientRate(0.15);
+    entry.setClientPatienceTime(5);
 
-    Simulation simulation(config);
+    Simulation simulation(entry);
 
     do {
         printTick(simulation);

@@ -10,30 +10,33 @@ std::size_t Queue::size() const {
     return clients_.size();
 }
 
-void Queue::pushBack(std::shared_ptr<AbstractClient> client) {
+void Queue::addQueueLast(std::shared_ptr<AbstractClient> client) {
     clients_.push_back(std::move(client));
 }
 
-std::shared_ptr<AbstractClient> Queue::takeNextToServe() {
+std::shared_ptr<AbstractClient> Queue::getQueueFirst() {
     if (clients_.empty()) {
         return nullptr;
     }
-
-    auto priorityIt = std::find_if(clients_.begin(), clients_.end(),
-        [](const std::shared_ptr<AbstractClient>& c) { return c->isPriority(); });
-
-    if (priorityIt != clients_.end()) {
-        auto client = *priorityIt;
-        clients_.erase(priorityIt);
-        return client;
-    }
-
     auto client = clients_.front();
     clients_.pop_front();
     return client;
 }
 
-void Queue::updatePatience() {
+std::shared_ptr<AbstractClient> Queue::findPriorityClient() const {
+    auto it = std::find_if(clients_.begin(), clients_.end(),
+        [](const std::shared_ptr<AbstractClient>& c) { return c->isPriority(); });
+    return it == clients_.end() ? nullptr : *it;
+}
+
+void Queue::removePriorityClient(const std::shared_ptr<AbstractClient>& client) {
+    auto it = std::find(clients_.begin(), clients_.end(), client);
+    if (it != clients_.end()) {
+        clients_.erase(it);
+    }
+}
+
+void Queue::updateClientPatience() {
     for (auto& client : clients_) {
         client->reducePatience();
     }

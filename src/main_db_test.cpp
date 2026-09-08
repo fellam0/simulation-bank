@@ -8,18 +8,17 @@
 int main(int argc, char** argv) {
     QCoreApplication app(argc, argv);
 
-    SimulationConfig config;
-    config.simulationDuration = 60;
-    config.cashierCount = 3;
-    config.minServiceTime = 2;
-    config.maxServiceTime = 8;
-    config.clientArrivalInterval = 4;
-    config.vipClientRate = 0.15;
-    config.clientPatienceTime = 5;
+    SimulationEntry entry;
+    entry.setSimulationDuration(60);
+    entry.setCashierCount(3);
+    entry.setMinServiceTime(2);
+    entry.setMaxServiceTime(8);
+    entry.setClientArrivalInterval(4);
+    entry.setPriorityClientRate(0.15);
+    entry.setClientPatienceTime(5);
 
-    Simulation simulation(config);
-    while (simulation.step()) {
-    }
+    Simulation simulation(entry);
+    simulation.simulate();
 
     StatisticRepository repository;
     if (!repository.open("simulation_bank.db")) {
@@ -27,7 +26,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    int runId = repository.saveRun(config, simulation.statisticManager());
+    int runId = repository.saveRun(entry, simulation.statisticManager());
     std::cout << "Simulation enregistree sous l'id " << runId << "\n";
 
     for (const RunSummary& run : repository.listRuns()) {
