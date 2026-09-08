@@ -10,6 +10,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QSpinBox>
 #include <QStatusBar>
 #include <QTabWidget>
@@ -96,7 +97,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
     auto* chartContainer = new QWidget();
     historyChartLayout_ = new QVBoxLayout(chartContainer);
-    historyLayout->addWidget(chartContainer, 2);
+
+    auto* chartScrollArea = new QScrollArea();
+    chartScrollArea->setWidget(chartContainer);
+    chartScrollArea->setWidgetResizable(true);
+    historyLayout->addWidget(chartScrollArea, 2);
 
     tabs->addTab(historyTab, "Historique");
 

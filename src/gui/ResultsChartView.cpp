@@ -33,6 +33,7 @@ QChartView* buildSatisfactionChart(const RunSummary& run) {
 
     auto* view = new QChartView(chart);
     view->setRenderHint(QPainter::Antialiasing);
+    view->setMinimumHeight(300);
     return view;
 }
 
@@ -78,6 +79,7 @@ QChartView* buildOperationBreakdownChart(const QVector<ClientRecord>& clients) {
 
     auto* view = new QChartView(chart);
     view->setRenderHint(QPainter::Antialiasing);
+    view->setMinimumHeight(300);
     return view;
 }
 
