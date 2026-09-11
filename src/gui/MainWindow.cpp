@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <QCoreApplication>
+#include <QDir>
 #include <QDoubleSpinBox>
 #include <QFormLayout>
 #include <QGroupBox>
@@ -110,7 +112,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(&tickTimer_, &QTimer::timeout, this, &MainWindow::onTick);
     connect(historyList_, &QListWidget::itemSelectionChanged, this, &MainWindow::onHistorySelectionChanged);
 
-    repository_.open("simulation_bank.db");
+    repository_.open(QDir(QCoreApplication::applicationDirPath()).filePath("simulation_bank.db"));
     refreshHistoryList();
 }
 

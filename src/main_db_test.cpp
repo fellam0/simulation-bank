@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QDir>
 
 #include <iostream>
 
@@ -21,7 +22,8 @@ int main(int argc, char** argv) {
     simulation.simulate();
 
     StatisticRepository repository;
-    if (!repository.open("simulation_bank.db")) {
+    const QString dbPath = QDir(QCoreApplication::applicationDirPath()).filePath("simulation_bank.db");
+    if (!repository.open(dbPath)) {
         std::cerr << "Impossible d'ouvrir la base de donnees\n";
         return 1;
     }
